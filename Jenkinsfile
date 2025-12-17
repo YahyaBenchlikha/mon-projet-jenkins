@@ -5,14 +5,14 @@ pipeline {
         stage('Installation') {
             steps {
                 echo 'Installation des dépendances...'
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Linter & Tests') {
             steps {
                 echo 'Vérification du code...'
-                sh 'npm run lint'
+                bat 'npm run lint'
                 // On peut ajouter "npm test" si vous avez des tests
             }
         }
@@ -20,7 +20,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Compilation de l\'application...'
-                sh 'npm run build'
+                bat 'npm run build'
             }
         }
 
