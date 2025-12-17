@@ -1,6 +1,13 @@
 pipeline {
     agent any // Utilise n'importe quel exécuteur disponible
 
+    triggers {
+        // Déclenche le pipeline à chaque push sur le repository
+        githubPush()
+        // Alternative: surveiller les changements toutes les 5 minutes
+        // pollSCM('H/5 * * * *')
+    }
+
     stages {
         stage('Installation') {
             steps {
