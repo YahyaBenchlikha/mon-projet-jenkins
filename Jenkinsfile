@@ -13,6 +13,7 @@ pipeline {
             steps {
                 echo 'Installation des dépendances...'
                 bat 'npm install'
+                echo'lol'
             }
         }
 
