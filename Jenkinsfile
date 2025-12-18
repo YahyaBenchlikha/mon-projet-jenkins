@@ -1,19 +1,30 @@
 pipeline {
-    agent any // Utilise n'importe quel exécuteur disponible
+    agent any
 
+    // Option 1: Polling (simple à configurer)
     triggers {
-        // Déclenche le pipeline à chaque push sur le repository
-        githubPush()
-        // Alternative: surveiller les changements toutes les 5 minutes
-        // pollSCM('H/5 * * * *')
+        pollSCM('H/5 * * * *')  // Toutes les 5 minutes
+    }
+    
+    // Option 2: Webhook (meilleure performance)
+    // triggers {}  // Laisser vide pour webhook pur
+
+    options {
+        // Empêcher les déclenchements simultanés du même job
+        disableConcurrentBuilds()
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm  // Récupère automatiquement le code
+            }
+        }
+        
         stage('Installation') {
             steps {
                 echo 'Installation des dépendances...'
                 bat 'npm install'
-                echo'lol'
             }
         }
 
@@ -21,7 +32,7 @@ pipeline {
             steps {
                 echo 'Vérification du code...'
                 bat 'npm run lint'
-                // On peut ajouter "npm test" si vous avez des tests
+                // Si vous avez des tests : bat 'npm test'
             }
         }
 
@@ -32,20 +43,23 @@ pipeline {
             }
         }
 
-        stage('Déploiement (Simulation)') {
+        stage('Déploiement') {
+            when {
+                branch 'main'  // Déployer seulement depuis main
+            }
             steps {
-                echo 'L\'application est prête à être déployée !'
-                // Ici, on pourrait copier les fichiers vers un serveur
+                echo 'Déploiement en cours...'
+                // Vos étapes de déploiement
             }
         }
     }
 
     post {
         success {
-            echo 'Félicitations ! Le pipeline a réussi.'
+            echo 'Pipeline réussi ✓'
         }
         failure {
-            echo 'Le pipeline a échoué. Vérifiez les logs.'
+            echo 'Pipeline échoué ✗'
         }
     }
 }
